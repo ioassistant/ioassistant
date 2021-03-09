@@ -6578,3 +6578,11 @@ section:hover .small-item-carousel .owl-next{
 .subsc{
   background: rgb(167 167 167 / 30%)!important;
 }
+
+.float-left{
+  float: left;
+}
+
+.float-right{
+  float: right;
+}
