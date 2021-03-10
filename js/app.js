@@ -1,19 +1,25 @@
 // Countdown Init Init
-$(document).ready(function(){
 
-    var countdown = $(".countdown");
-    var data_finish_date = countdown.attr("data-finish-date");
-    var data_UTC = countdown.attr("data-UTC");
-    var data_finish_message = countdown.attr("data-finish-message");
+let fetchurl = 'https://ioassistant.herokuapp.com/';
 
-    countdown.downCount({
-        date: data_finish_date,
-        offset: data_UTC
-    }, function(){
-        alert(data_finish_message);
-    });
+if(location.href.includes('localhost')){
+  fetchurl = 'http://localhost:8080/';
+}
 
-});
+const ls = {
+  get(i) {
+    return JSON.parse(localStorage.getItem(i))
+  },
+  set(i, e) {
+    localStorage.setItem(i, JSON.stringify(e))
+    return;
+  },
+  del(i) {
+    localStorage.removeItem(i);
+  }
+};
+
+
 
 
 /**
@@ -253,3 +259,106 @@ particlesJS('particle', {
     },
     'retina_detect': true
   });
+
+
+
+function postData(data, cb){
+
+  fetch(fetchurl +'api/subscribe', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: data
+  })
+  .then(function(res){
+    console.log(res)
+
+    if(res.status > 199 && res.status < 300){
+      return res.json().then(function(data){
+        cb(false, data);
+      });
+    }
+
+    throw res.status
+  })
+  .catch(function(err){
+    cb(err)
+  });
+
+}
+
+function is_email(email){
+ if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+   return true;
+  }
+  return false;
+}
+
+//beta
+function addSubscribe(x){
+  let ele = document.getElementById(x +'-inp'),
+  dest = document.getElementById(x +'-result'),
+  val = ele.value;
+
+    if(val && is_email(val) && !ls.get(x)){
+
+      postData(JSON.stringify({email: val, sel: x}), function(err,res){
+        if(err || res.code > 200){
+          dest.classList.remove('lime');
+          dest.classList.add('red');
+          if(res.code > 200){
+            return dest.textContent = res.msg;
+          }
+          return dest.textContent = 'failed to post data';
+        }
+
+        ls.set(x, 1);
+        console.log(x +' success')
+        dest.classList.remove('red');
+        dest.classList.add('lime');
+        return dest.textContent = res.msg;
+      })
+
+  } else {
+
+    dest.classList.remove('lime');
+    dest.classList.add('red');
+
+    if(ls.get(x)){
+      return dest.textContent = 'email already subscribed'
+    }
+    return dest.textContent = 'invalid data'
+  }
+
+}
+
+
+
+$(document).ready(function(){
+
+    var countdown = $(".countdown");
+    var data_finish_date = countdown.attr("data-finish-date");
+    var data_UTC = countdown.attr("data-UTC");
+    var data_finish_message = countdown.attr("data-finish-message");
+
+    countdown.downCount({
+        date: data_finish_date,
+        offset: data_UTC
+    }, function(){
+        alert(data_finish_message);
+    });
+
+    let beta = document.getElementById('beta-btn'),
+    news = document.getElementById('news-btn');
+
+    beta.onclick = function(){
+      addSubscribe('beta');
+    }
+
+    news.onclick = function(){
+      addSubscribe('news');
+    }
+
+});
