@@ -296,48 +296,38 @@ function is_email(email){
   return false;
 }
 
-
-function onClick() {
-  e.preventDefault();
-  grecaptcha.ready(function() {
-    grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
-        // Add your logic to submit to your backend server here.
-    });
-  });
-}
-
 //beta/subscribe
 function addSubscribe(x){
 
-  grecaptcha.ready(function() {
-    grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
-        console.log(token)
-    });
-  });
-
-  return;
   let ele = document.getElementById(x +'-inp'),
   dest = document.getElementById(x +'-result'),
   val = ele.value;
 
     if(val && is_email(val) && !ls.get(x)){
 
-      postData(JSON.stringify({email: val, sel: x}), function(err,res){
-        if(err || res.code > 200){
-          dest.classList.remove('lime');
-          dest.classList.add('red');
-          if(res.code > 200){
-            return dest.textContent = res.msg;
-          }
-          return dest.textContent = 'failed to post data';
-        }
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
 
-        ls.set(x, 1);
-        console.log(x +' success')
-        dest.classList.remove('red');
-        dest.classList.add('lime');
-        return dest.textContent = res.msg;
-      })
+            postData(JSON.stringify({email: val, sel: x, tk: token}), function(err,res){
+              if(err || res.code > 200){
+                dest.classList.remove('lime');
+                dest.classList.add('red');
+                if(res.code > 200){
+                  return dest.textContent = res.msg;
+                }
+                return dest.textContent = 'failed to post data';
+              }
+
+              ls.set(x, 1);
+              console.log(x +' success')
+              dest.classList.remove('red');
+              dest.classList.add('lime');
+              return dest.textContent = res.msg;
+            })
+
+        });
+      });
+
 
   } else {
 
