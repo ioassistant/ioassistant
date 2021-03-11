@@ -1,0 +1,29 @@
+{
+    "@context": "https://schema.org/",
+    "@type": "MobileApplication",
+    "inLanguage": "en",
+    "url":"https://ioassistant.com",
+    "applicationCategory": "category here",
+    "operatingSystem": "ios, android, windows phone",
+    "keywords": "seo sales b2b",
+    "fileSize":"18MB",
+    "creativeWorkStatus":"beta",
+    "softwareVersion":"1.0.0-beta",
+    "copyrightHolder":{
+        "@type": "Organization",
+        "name": "Nomatec Labs"
+    },
+    "copyrightNotice":"copyright nomatec labs 2021",
+    "copyrightYear": 2021,
+    "dateCreated": "2021-01-01T08:45:00-04:00",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://nystudio107.com/img/plugins/seomatic/_1200x630_crop_center-center_82_none/plugin-logo.png"
+    },
+    "license":"MIT",
+    "description": "dfsdfsdfsdfsdsdfgsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf",
+    "creator": {
+    	"@type": "Organization",
+        "name": "Nomatec Labs"
+    }
+  }

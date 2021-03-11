@@ -296,8 +296,26 @@ function is_email(email){
   return false;
 }
 
-//beta
+
+function onClick() {
+  e.preventDefault();
+  grecaptcha.ready(function() {
+    grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
+        // Add your logic to submit to your backend server here.
+    });
+  });
+}
+
+//beta/subscribe
 function addSubscribe(x){
+
+  grecaptcha.ready(function() {
+    grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
+        console.log(token)
+    });
+  });
+
+  return;
   let ele = document.getElementById(x +'-inp'),
   dest = document.getElementById(x +'-result'),
   val = ele.value;
