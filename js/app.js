@@ -1,4 +1,3 @@
-// Countdown Init Init
 
 let fetchurl = 'https://ioassistant.herokuapp.com/';
 
@@ -273,7 +272,6 @@ function postData(data, cb){
     body: data
   })
   .then(function(res){
-    console.log(res)
 
     if(res.status > 199 && res.status < 300){
       return res.json().then(function(data){
@@ -370,3 +368,12 @@ $(document).ready(function(){
     }
 
 });
+
+//google analytics
+window.dataLayer = window.dataLayer || [];
+function gtag(){
+  dataLayer.push(arguments);
+}
+gtag('js', new Date());
+
+gtag('config', 'G-7RR7D8P366');
