@@ -21,3 +21,15 @@ Copyright (c) 2014 Daniel Eden
   bottom: 50%!important;
   opacity: .6;
 }
+
+.mobile-on .desktop-nav ul li.d-flex {
+  padding: 5px 0!important
+}
+
+.d-flex{
+    display: inline-flex!important;
+}
+
+.d-flex a{
+    margin: 0 5px;
+}
