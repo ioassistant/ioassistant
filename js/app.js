@@ -36,7 +36,7 @@ const ls = {
 
         // Throw error if date is not set
         if (!settings.date) {
-            return
+            return;
         }
 
         // Throw error if date is set incorectly
