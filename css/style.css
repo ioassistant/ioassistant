@@ -37,3 +37,13 @@ Copyright (c) 2014 Daniel Eden
 .d-flex a{
     margin: 0 5px;
 }
+
+.ico-compat{
+  margin-bottom: 50px;
+
+}
+
+.bg-glaze{
+  background: rgb(255 255 255 / 12%);
+  border-radius: 10px;
+}
