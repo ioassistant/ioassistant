@@ -148,6 +148,8 @@ function debounce(func, wait, immediate) {
 }
 
 window.addEventListener('scroll', debounce(function(evt){
+
+
    let top = window.pageYOffset || document.scrollTop;
    if(top === NaN || !top){
      toTop.classList.add('hidden');
@@ -157,6 +159,10 @@ window.addEventListener('scroll', debounce(function(evt){
    top = null;
    return;
 }, 250))
+
+
+
+
 
 
 particlesJS('particle', {
@@ -366,6 +372,8 @@ $(document).ready(function(){
     news.onclick = function(){
       addSubscribe('news');
     }
+
+
 
 });
 
