@@ -377,3 +377,15 @@ function gtag(){
 gtag('js', new Date());
 
 gtag('config', 'G-7RR7D8P366');
+
+
+//tawkto
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+
+
+var s1=document.createElement("script");
+s1.defer=true;
+s1.src='https://embed.tawk.to/604ab4ae385de407571f3cab/1f0ht3ivf';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+document.body.append(s1);
