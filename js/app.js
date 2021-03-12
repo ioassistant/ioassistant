@@ -36,7 +36,7 @@ const ls = {
 
         // Throw error if date is not set
         if (!settings.date) {
-            $.error('Date is not defined.');
+            return
         }
 
         // Throw error if date is set incorectly
