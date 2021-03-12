@@ -350,6 +350,7 @@ function addSubscribe(x){
 
 $(document).ready(function(){
 
+  if(location.href === 'https://www.ioassistant.com/'){
     var countdown = $(".countdown");
     var data_finish_date = countdown.attr("data-finish-date");
     var data_UTC = countdown.attr("data-UTC");
@@ -372,10 +373,10 @@ $(document).ready(function(){
     news.onclick = function(){
       addSubscribe('news');
     }
-
-
+  }
 
 });
+
 
 //google analytics
 window.dataLayer = window.dataLayer || [];
