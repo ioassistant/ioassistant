@@ -346,7 +346,56 @@ function addSubscribe(x){
 
 }
 
+if(location.pathname === '/api/subscription'){
+  function subscription(){
+    let obj = {},
+    txtlg = document.getElementById('txt-lg'),
+    txtsm = document.getElementById('txt-sm'),
+    txtbtn = document.getElementById('txt-btn');
 
+    location.search.slice(1).split('&').forEach(function(x){
+      x = x.split('=');
+      if(x[0] === 'sel'){
+        x[1] = JSON.parse(x[1])
+      }
+      obj[x[0]] = x[1];
+    });
+
+    console.log(obj)
+
+
+    setTimeout(function(){
+      txtlg.textContent = 'DONE';
+      txtsm.textContent = 'Your request has been successfully processed';
+      txtbtn.classList.remove('hidden')
+    }, 10000)
+
+    if(typeof obj.sel === 'boolean' && obj.type && obj.id){
+
+      postData(JSON.stringify({email: val, sel: x, tk: token}), function(err,res){
+        if(err || res.code > 200){
+          dest.classList.remove('lime');
+          dest.classList.add('red');
+          if(res.code > 200){
+            return dest.textContent = res.msg;
+          }
+
+          txtlg.textContent = 'ERROR';
+          txtsm.textContent = 'failed to post data';
+          txtbtn.classList.remove('hidden');
+          return;
+        }
+
+        ls.set(x, 1);
+        console.log(x +' success')
+        dest.classList.remove('red');
+        dest.classList.add('lime');
+        return dest.textContent = res.msg;
+      })
+
+    }
+  }
+}
 
 $(document).ready(function(){
 
