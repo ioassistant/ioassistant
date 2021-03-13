@@ -14,7 +14,7 @@ let toTop = document.getElementsByClassName('link-to-top')[0];
 
         // Throw error if date is not set
         if (!settings.date) {
-            return console.error('countdown date not set')
+            return //console.error('countdown date not set')
         }
 
         // Throw error if date is set incorectly
