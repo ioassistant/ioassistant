@@ -2,12 +2,7 @@ import { config } from './config.mjs'
 import { ls } from './storage.mjs'
 
 
-
-
-/**
- * downCount: Simple Countdown clock with offset
- * Author: Sonny T. <hi@sonnyt.com>, sonnyt.com
- */
+let toTop = document.getElementsByClassName('link-to-top')[0]
 
 (function ($) {
 
@@ -19,7 +14,7 @@ import { ls } from './storage.mjs'
 
         // Throw error if date is not set
         if (!settings.date) {
-            return;
+            return console.error('countdown date not set')
         }
 
         // Throw error if date is set incorectly
@@ -29,11 +24,6 @@ import { ls } from './storage.mjs'
 
         // Save container
         var container = this;
-
-        /**
-         * Change client's local date to match offset timezone
-         * @return {Object} Fixed Date object.
-         */
         var currentDate = function () {
             // get client's current date
             var date = new Date();
@@ -109,9 +99,6 @@ import { ls } from './storage.mjs'
 
 })(jQuery);
 
-let toTop = document.getElementsByClassName('link-to-top')[0]
-
-
 function debounce(func, wait, immediate) {
   let timeout;
   return function() {
@@ -132,7 +119,6 @@ function debounce(func, wait, immediate) {
 
 window.addEventListener('scroll', debounce(function(evt){
 
-
    let top = window.pageYOffset || document.scrollTop;
    if(top === NaN || !top){
      toTop.classList.add('hidden');
@@ -142,113 +128,6 @@ window.addEventListener('scroll', debounce(function(evt){
    top = null;
    return;
 }, 250))
-
-
-
-
-
-
-particlesJS('particle', {
-    'particles': {
-      'number': {
-        'value': 300,
-        'density': {
-          'enable': true,
-          'value_area': 1800
-        }
-      },
-      'color': {
-        'value': '#ddd'
-      },
-      'shape': {
-        'type': '',
-        'random': true,
-        'stroke': {
-          'width': 0,
-          'color': 'red'
-        },
-        'polygon': {
-          'nb_sides': 6
-        }
-      },
-      'opacity': {
-        'value': 0.5,
-        'random': true,
-        'anim': {
-          'enable': false,
-          'speed': 1,
-          'opacity_min': 0.1,
-          'sync': false
-        }
-      },
-      'size': {
-        'value': 80,
-        'random': true,
-        'anim': {
-          'enable': true,
-          'speed_min': .2,
-          'size_min': 2,
-          'sync': false
-        }
-      },
-      'line_linked': {
-        'enable': true,
-        'distance': 200,
-        'color': '#ddd',
-        'opacity': .3,
-        'width': .6
-      },
-      'move': {
-        'enable': true,
-        'speed_min': 6,
-        'direction': 'none',
-        'random': true,
-        'straight': false,
-        'out_mode': 'out',
-        'bounce': false,
-        'attract': {
-          'enable': false,
-          'rotateX': 1200,
-          'rotateY': 1200
-        }
-      }
-    },
-    'interactivity': {
-      'detect_on': 'canvas',
-      'events': {
-        'onhover': {
-          'enable': false,
-          'mode': 'grab'
-        },
-        'onclick': {
-          'enable': false,
-          'mode': 'push'
-        },
-        'resize': true
-      },
-      'modes': {
-        'grab': {
-          'distance': 400,
-          'line_linked': {
-            'opacity': 1
-          }
-        },
-        'repulse': {
-          'distance': 200,
-          'duration': 0.4
-        },
-        'push': {
-          'particles_nb': 4
-        },
-        'remove': {
-          'particles_nb': 2
-        }
-      }
-    },
-    'retina_detect': true
-  });
-
-
 
 function postData(data, dest, cb){
 
@@ -283,6 +162,8 @@ function is_email(email){
 
 //beta/subscribe
 function addSubscribe(x){
+
+  ls.set(x, 0)
 
   let ele = document.getElementById(x +'-inp'),
   dest = document.getElementById(x +'-result'),
@@ -330,17 +211,15 @@ function addSubscribe(x){
 
 $(document).ready(function(){
 
-  if(location.href === 'https://www.ioassistant.com/'){
-    var countdown = $(".countdown");
-    var data_finish_date = countdown.attr("data-finish-date");
-    var data_UTC = countdown.attr("data-UTC");
-    var data_finish_message = countdown.attr("data-finish-message");
+  particlesJS('particle', config.particle);
+
+  if(location.href === config.baseurl){
 
     countdown.downCount({
         date: config.downCount.finish,
-        offset: data_UTC
+        offset: config.downCount.utc
     }, function(){
-        alert(data_finish_message);
+        console.log(config.downCount.finish_message);
     });
 
     let beta = document.getElementById('beta-btn'),
@@ -353,7 +232,8 @@ $(document).ready(function(){
     news.onclick = function(){
       addSubscribe('news');
     }
-  } else if(location.pathname === '/api/subscription'){
+
+  } else if(location.pathname === config.subscriptionurl){
 
     function subscription(){
       let obj = {},
@@ -403,7 +283,6 @@ void function init() {
       dataLayer.push(arguments);
     }
     gtag('js', new Date());
-
     gtag('config', config.google.analytics);
   }
 
@@ -417,4 +296,5 @@ void function init() {
     s1.setAttribute('crossorigin','*');
     document.body.append(s1);
   }
+
 }();
