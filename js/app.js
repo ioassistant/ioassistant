@@ -346,7 +346,6 @@ function addSubscribe(x){
 
 }
 
-if(location.pathname === '/api/subscription'){
 
   function subscription(){
     let obj = {},
@@ -363,13 +362,6 @@ if(location.pathname === '/api/subscription'){
     });
 
     console.log(obj)
-
-
-    setTimeout(function(){
-      txtlg.textContent = 'DONE';
-      txtsm.textContent = 'Your request has been successfully processed';
-      txtbtn.classList.remove('hidden')
-    }, 10000)
 
     if(typeof obj.sel === 'boolean' && obj.type && obj.id){
 
@@ -391,7 +383,7 @@ if(location.pathname === '/api/subscription'){
 
     }
   }
-}
+
 
 $(document).ready(function(){
 
@@ -418,6 +410,8 @@ $(document).ready(function(){
     news.onclick = function(){
       addSubscribe('news');
     }
+  } else if(location.pathname === '/api/subscription'){
+    subscription()
   }
 
 });
