@@ -1,22 +1,5 @@
-
-let fetchurl = 'https://ioassistant.herokuapp.com/';
-
-if(location.href.includes('localhost')){
-  fetchurl = 'http://localhost:8080/';
-}
-
-const ls = {
-  get(i) {
-    return JSON.parse(localStorage.getItem(i))
-  },
-  set(i, e) {
-    localStorage.setItem(i, JSON.stringify(e))
-    return;
-  },
-  del(i) {
-    localStorage.removeItem(i);
-  }
-};
+import { config } from './config.mjs'
+import { ls } from './storage.mjs'
 
 
 
@@ -269,12 +252,10 @@ particlesJS('particle', {
 
 function postData(data, dest, cb){
 
-  fetch(fetchurl +'api/'+ dest, {
+  fetch(config.fetchurl +'api/'+ dest, {
     method: 'POST',
     mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: config.headers,
     body: data
   })
   .then(function(res){
@@ -307,10 +288,10 @@ function addSubscribe(x){
   dest = document.getElementById(x +'-result'),
   val = ele.value;
 
-    if(val && is_email(val) && !ls.get(x)){
+    if(val && !ls.get(x)){
 
       grecaptcha.ready(function() {
-        grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
+        grecaptcha.execute(config.recaptcha, {action: 'submit'}).then(function(token) {
 
             postData(JSON.stringify({email: val, sel: x, tk: token}), 'subscribe',function(err,res){
               if(err || res.code > 200){
@@ -347,44 +328,6 @@ function addSubscribe(x){
 }
 
 
-  function subscription(){
-    let obj = {},
-    txtlg = document.getElementById('txt-lg'),
-    txtsm = document.getElementById('txt-sm'),
-    txtbtn = document.getElementById('txt-btn');
-
-    location.search.slice(1).split('&').forEach(function(x){
-      x = x.split('=');
-      if(x[0] === 'sel'){
-        x[1] = JSON.parse(x[1])
-      }
-      obj[x[0]] = x[1];
-    });
-
-    console.log(obj)
-
-    if(typeof obj.sel === 'boolean' && obj.type && obj.id){
-
-      postData(JSON.stringify({email: obj.id, sel: obj.sel, type: obj.type}), 'confirm',function(err,res){
-        txtbtn.classList.remove('hidden');
-        if(err || res.code > 200){
-          txtlg.textContent = 'ERROR';
-          if(res.code > 200){
-            return txtsm.textContent = res.msg;
-          }
-
-          txtsm.textContent = 'failed to post data';
-          return;
-        }
-
-        txtlg.textContent = 'DONE';
-        return txtsm.textContent = res.msg;
-      })
-
-    }
-  }
-
-
 $(document).ready(function(){
 
   if(location.href === 'https://www.ioassistant.com/'){
@@ -394,7 +337,7 @@ $(document).ready(function(){
     var data_finish_message = countdown.attr("data-finish-message");
 
     countdown.downCount({
-        date: data_finish_date,
+        date: config.downCount.finish,
         offset: data_UTC
     }, function(){
         alert(data_finish_message);
@@ -411,29 +354,67 @@ $(document).ready(function(){
       addSubscribe('news');
     }
   } else if(location.pathname === '/api/subscription'){
+
+    function subscription(){
+      let obj = {},
+      txtlg = document.getElementById('txt-lg'),
+      txtsm = document.getElementById('txt-sm'),
+      txtbtn = document.getElementById('txt-btn');
+
+      location.search.slice(1).split('&').forEach(function(x){
+        x = x.split('=');
+        if(x[0] === 'sel'){
+          x[1] = JSON.parse(x[1])
+        }
+        obj[x[0]] = x[1];
+      });
+
+      if(typeof obj.sel === 'boolean' && obj.type && obj.id){
+
+        postData(JSON.stringify({email: obj.id, sel: obj.sel, type: obj.type}), 'confirm', function(err,res){
+          txtbtn.classList.remove('hidden');
+          if(err || res.code > 200){
+            txtlg.textContent = 'ERROR';
+            if(res.code > 200){
+              return txtsm.textContent = res.msg;
+            }
+
+            txtsm.textContent = 'failed to post data';
+            return;
+          }
+
+          txtlg.textContent = 'DONE';
+          return txtsm.textContent = res.msg;
+        })
+
+      }
+    }
+
     subscription()
   }
 
 });
 
+void function init() {
+  //google analytics
+  if(config.google.active){
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
 
-//google analytics
-window.dataLayer = window.dataLayer || [];
-function gtag(){
-  dataLayer.push(arguments);
-}
-gtag('js', new Date());
+    gtag('config', config.google.analytics);
+  }
 
-gtag('config', 'G-7RR7D8P366');
-
-
-//tawkto
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-
-
-var s1=document.createElement("script");
-s1.defer=true;
-s1.src='https://embed.tawk.to/604ab4ae385de407571f3cab/1f0ht3ivf';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-document.body.append(s1);
+  //tawkto
+  if(config.tawk.active){
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    let s1=document.createElement("script");
+    s1.defer=true;
+    s1.src= [config.tawk.url,config.tawk.api].join('/');
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    document.body.append(s1);
+  }
+}();
