@@ -267,9 +267,9 @@ particlesJS('particle', {
 
 
 
-function postData(data, cb){
+function postData(data, dest, cb){
 
-  fetch(fetchurl +'api/subscribe', {
+  fetch(fetchurl +'api/'+ dest, {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -312,7 +312,7 @@ function addSubscribe(x){
       grecaptcha.ready(function() {
         grecaptcha.execute('6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W', {action: 'submit'}).then(function(token) {
 
-            postData(JSON.stringify({email: val, sel: x, tk: token}), function(err,res){
+            postData(JSON.stringify({email: val, sel: x, tk: token}), 'subscribe',function(err,res){
               if(err || res.code > 200){
                 dest.classList.remove('lime');
                 dest.classList.add('red');
@@ -347,6 +347,7 @@ function addSubscribe(x){
 }
 
 if(location.pathname === '/api/subscription'){
+
   function subscription(){
     let obj = {},
     txtlg = document.getElementById('txt-lg'),
@@ -372,25 +373,20 @@ if(location.pathname === '/api/subscription'){
 
     if(typeof obj.sel === 'boolean' && obj.type && obj.id){
 
-      postData(JSON.stringify({email: val, sel: x, tk: token}), function(err,res){
+      postData(JSON.stringify({email: obj.id, sel: obj.sel, type: obj.type}), 'confirm',function(err,res){
+        txtbtn.classList.remove('hidden');
         if(err || res.code > 200){
-          dest.classList.remove('lime');
-          dest.classList.add('red');
+          txtlg.textContent = 'ERROR';
           if(res.code > 200){
-            return dest.textContent = res.msg;
+            return txtsm.textContent = res.msg;
           }
 
-          txtlg.textContent = 'ERROR';
           txtsm.textContent = 'failed to post data';
-          txtbtn.classList.remove('hidden');
           return;
         }
 
-        ls.set(x, 1);
-        console.log(x +' success')
-        dest.classList.remove('red');
-        dest.classList.add('lime');
-        return dest.textContent = res.msg;
+        txtlg.textContent = 'DONE';
+        return txtsm.textContent = res.msg;
       })
 
     }
