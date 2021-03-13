@@ -2,7 +2,7 @@ import { config } from './config.mjs'
 import { ls } from './storage.mjs'
 
 
-let toTop = document.getElementsByClassName('link-to-top')[0]
+let toTop = document.getElementsByClassName('link-to-top')[0];
 
 (function ($) {
 
