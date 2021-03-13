@@ -214,7 +214,7 @@ $(document).ready(function(){
   particlesJS('particle', config.particle);
 
   if(location.href === config.baseurl){
-
+    var countdown = $(".countdown");
     countdown.downCount({
         date: config.downCount.finish,
         offset: config.downCount.utc
