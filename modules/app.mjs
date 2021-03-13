@@ -219,7 +219,7 @@ $(document).ready(function(){
         date: config.downCount.finish,
         offset: config.downCount.utc
     }, function(){
-        console.log(config.downCount.finish_message);
+        //console.log(config.downCount.finish_message);
     });
 
     let beta = document.getElementById('beta-btn'),
