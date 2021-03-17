@@ -100,22 +100,6 @@ const tpl = {
         ),
         x('div', {class: 'mobile-nav', role: 'button', tabindex: '0'},
           x('i', {class: 'fa fa-bars'})
-        ),
-        x('div', {class: 'inner-nav desktop-nav'},
-          x('ul', {class: 'mt-30 clearlist scroll-nav local-scroll'},
-            x('li',
-              x('a', {href: 'mailto:'+ config.email.contact},
-                x('i', {class: 'fa fa-envelope'}),
-                config.email.contact
-              )
-            ),
-            x('li',
-              x('a', {href: '#'},
-                x('i', {class: 'fa fa-phone'}),
-                config.number
-              )
-            )
-          )
         )
       )
     )
