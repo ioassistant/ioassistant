@@ -113,7 +113,7 @@ import { tpl } from './tpl.mjs';
 
 $(document).ready(function(){
 
-  if(location.href === config.baseurl || !location.href.includes('404')){
+  if(location.href === config.baseurl /*|| !location.href.includes('404')*/){
 
 
     var countdown = $(".countdown");
