@@ -1,8 +1,8 @@
-import { config } from './config.mjs'
-import { ls } from './storage.mjs'
+import { config } from './config.mjs';
+import { x } from './xscript.mjs';
+import { utils } from './utils.mjs';
+import { tpl } from './tpl.mjs';
 
-
-let toTop = document.getElementsByClassName('link-to-top')[0];
 
 (function ($) {
 
@@ -99,121 +99,23 @@ let toTop = document.getElementsByClassName('link-to-top')[0];
 
 })(jQuery);
 
-function debounce(func, wait, immediate) {
-  let timeout;
-  return function() {
-    let context = this, args = arguments,
-    later = function() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    },
-    callNow = immediate && !timeout;
 
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow){
-      func.apply(context, args);
-    }
-  }
-}
 
-window.addEventListener('scroll', debounce(function(evt){
 
-   let top = window.pageYOffset || document.scrollTop;
-   if(top === NaN || !top){
-     toTop.classList.add('hidden');
-   } else if(toTop.classList.contains('hidden')){
-     toTop.classList.remove('hidden');
-   }
-   top = null;
-   return;
-}, 250))
 
-function postData(data, dest, cb){
 
-  fetch(config.fetchurl +'api/'+ dest, {
-    method: 'POST',
-    mode: 'cors',
-    headers: config.headers,
-    body: data
-  })
-  .then(function(res){
 
-    if(res.status > 199 && res.status < 300){
-      return res.json().then(function(data){
-        cb(false, data);
-      });
-    }
 
-    throw res.status
-  })
-  .catch(function(err){
-    cb(err)
-  });
-
-}
-
-function is_email(email){
- if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-   return true;
-  }
-  return false;
-}
 
 //beta/subscribe
-function addSubscribe(x){
 
-  ls.set(x, 0)
-
-  let ele = document.getElementById(x +'-inp'),
-  dest = document.getElementById(x +'-result'),
-  val = ele.value;
-
-    if(val && !ls.get(x)){
-
-      grecaptcha.ready(function() {
-        grecaptcha.execute(config.recaptcha, {action: 'submit'}).then(function(token) {
-
-            postData(JSON.stringify({email: val, sel: x, tk: token}), 'subscribe',function(err,res){
-              if(err || res.code > 200){
-                dest.classList.remove('lime');
-                dest.classList.add('red');
-                if(res.code > 200){
-                  return dest.textContent = res.msg;
-                }
-                return dest.textContent = 'failed to post data';
-              }
-
-              ls.set(x, 1);
-              console.log(x +' success')
-              dest.classList.remove('red');
-              dest.classList.add('lime');
-              return dest.textContent = res.msg;
-            })
-
-        });
-      });
-
-
-  } else {
-
-    dest.classList.remove('lime');
-    dest.classList.add('red');
-
-    if(ls.get(x)){
-      return dest.textContent = 'email already subscribed'
-    }
-    return dest.textContent = 'invalid data'
-  }
-
-}
 
 
 $(document).ready(function(){
 
-  particlesJS('particle', config.particle);
+  if(location.href === config.baseurl || !location.href.includes('404')){
 
-  if(location.href === config.baseurl){
+
     var countdown = $(".countdown");
     countdown.downCount({
         date: config.downCount.finish,
@@ -226,14 +128,15 @@ $(document).ready(function(){
     news = document.getElementById('news-btn');
 
     beta.onclick = function(){
-      addSubscribe('beta');
+      utils.addSubscribe('beta');
     }
 
     news.onclick = function(){
-      addSubscribe('news');
+      utils.addSubscribe('news');
     }
 
   } else if(location.pathname === config.subscriptionurl){
+
 
     function subscription(){
       let obj = {},
@@ -241,17 +144,17 @@ $(document).ready(function(){
       txtsm = document.getElementById('txt-sm'),
       txtbtn = document.getElementById('txt-btn');
 
-      location.search.slice(1).split('&').forEach(function(x){
-        x = x.split('=');
-        if(x[0] === 'sel'){
-          x[1] = JSON.parse(x[1])
+      location.search.slice(1).split('&').forEach(function(y){
+        y = y.split('=');
+        if(y[0] === 'sel'){
+          y[1] = JSON.parse(y[1])
         }
-        obj[x[0]] = x[1];
+        obj[y[0]] = y[1];
       });
 
       if(typeof obj.sel === 'boolean' && obj.type && obj.id){
 
-        postData(JSON.stringify({email: obj.id, sel: obj.sel, type: obj.type}), 'confirm', function(err,res){
+        utils.postData(JSON.stringify({email: obj.id, sel: obj.sel, type: obj.type}), 'confirm', function(err,res){
           txtbtn.classList.remove('hidden');
           if(err || res.code > 200){
             txtlg.textContent = 'ERROR';
@@ -271,30 +174,39 @@ $(document).ready(function(){
     }
 
     subscription()
+  } else {
+
+    document.body.append(
+      tpl.appPre(),
+      tpl.base404()
+    )
   }
+
+  particlesJS('particle', config.particle);
 
 });
 
 void function init() {
   //google analytics
   if(config.google.active){
+    let args = ['js', new Date(),'config', config.google.analytics]
     window.dataLayer = window.dataLayer || [];
-    function gtag(){
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', config.google.analytics);
+    window.dataLayer.push(...args)
   }
 
   //tawkto
   if(config.tawk.active){
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    let s1=document.createElement("script");
-    s1.defer=true;
-    s1.src= [config.tawk.url,config.tawk.api].join('/');
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    document.body.append(s1);
+    if(typeof Tawk_API === 'undefined'){
+      window.Tawk_API = {};
+    }
+    window.Tawk_LoadStart = new Date();
+
+    document.body.append(x('script', {
+      src: [config.tawk.url,config.tawk.api].join('/'),
+      charset: 'UTF-8',
+      crossorigin: '*',
+      defer: ''
+    }));
   }
 
 }();

@@ -3,10 +3,27 @@ const config = {
   baseurl: 'https://www.ioassistant.com/',
   fetchurl: 'https://ioassistant.herokuapp.com/',
   subscriptionurl: '/api/subscription',
+  nomatecurl: 'https://www.facebook.com/Nomatec-Labs-102083311959313',
   local: 'http://localhost:8080/',
+  atom: {
+    news: 'https://www.ioassistant.com/atom/news.atom',
+    support: 'https://www.ioassistant.com/atom/support.atom'
+  },
+  social: {
+    facebook: 'https://www.facebook.com/Ioassistant-100106995496568',
+    twitter: 'https://twitter.com/ioassistant',
+    youtube: 'https://www.youtube.com/channel/UCL8uG5d8V7cRiFnjAhCw0Ig'
+  },
   headers: {
     'Content-Type': 'application/json'
   },
+  email: {
+    support: 'support@ioassistant.com',
+    news: 'news@ioassistant.com',
+    contact: 'contact@ioassistant.com'
+  },
+  location: '',
+  number: '+61 477 590 110',
   recaptcha: '6LcKrHsaAAAAAFCXLdVeXKr_0kqh3rzkX-Il0y_W',
   tawk: {
     active: true,
